@@ -1,9 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using SeedWebApplication.Data.Context;
+using SeedWebApplication.DTOs;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+         options.UseInMemoryDatabase("inmemo"));
 
 var app = builder.Build();
 
@@ -24,7 +31,7 @@ var summaries = new[]
 app.MapGet("/weatherforecast", () =>
 {
     var forecast = Enumerable.Range(1, 5).Select(index =>
-       new WeatherForecast
+       new WeatherForecastDto
        (
            DateTime.Now.AddDays(index),
            Random.Shared.Next(-20, 55),
@@ -36,8 +43,3 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast");
 
 app.Run();
-
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
