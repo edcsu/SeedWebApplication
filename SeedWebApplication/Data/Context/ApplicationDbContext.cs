@@ -14,6 +14,6 @@ namespace SeedWebApplication.Data.Context
         {
         }
 
-        public WeatherForecast WeatherForecasts { get; set; }
+        public DbSet<WeatherForecast> WeatherForecasts { get; set; }
     }
 }

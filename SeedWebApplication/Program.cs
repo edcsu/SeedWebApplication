@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SeedWebApplication.Data.Context;
+using SeedWebApplication.Data.Repos;
 using SeedWebApplication.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
          options.UseInMemoryDatabase("inmemo"));
+
+builder.Services.AddScoped<IWeatherForecastRepo, WeatherForecastRepo>();
 
 var app = builder.Build();
 
