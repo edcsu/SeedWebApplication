@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SeedWebApplication.Data;
 using SeedWebApplication.Data.Context;
 using SeedWebApplication.Data.Repos;
 using SeedWebApplication.DTOs;
+using SeedWebApplication.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,18 +34,15 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/weatherforecast", ([FromServices] IWeatherForecastRepo _weatherForecastRepo) =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-       new WeatherForecastDto
-       (
-           DateTime.Now.AddDays(index),
-           Random.Shared.Next(-20, 55),
-           summaries[Random.Shared.Next(summaries.Length)]
-       ))
-        .ToArray();
-    return forecast;
+    var forecast = _weatherForecastRepo.GetAllWeatherForecasts().Select(fc => fc.WeatherForecastAsDto());
+    return Results.Ok(forecast);
 })
-.WithName("GetWeatherForecast");
+.WithName("GetWeatherForecast")
+.Produces(statusCode: StatusCodes.Status200OK, responseType: typeof(IEnumerable<WeatherForecastDto>));
+
+
+SeedData.PopulateDb(app);
 
 app.Run();
