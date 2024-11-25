@@ -29,12 +29,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/weatherforecast", ([FromServices] IWeatherForecastRepo _weatherForecastRepo) =>
+app.MapGet("/weatherforecast", ([FromServices] IWeatherForecastRepo weatherForecastRepo) =>
 {
-    var forecast = _weatherForecastRepo.GetAllWeatherForecasts().Select(fc => fc.WeatherForecastAsDto());
+    var forecast = weatherForecastRepo.GetAllWeatherForecasts().Select(fc => fc.WeatherForecastAsDto());
     return Results.Ok(forecast);
 })
 .WithName("GetWeatherForecast")
+.WithTags("WeatherGroup")
+.WithSummary("Get WeatherForecast")
+.WithDescription("Get list of weather forecasts")
 .Produces(statusCode: StatusCodes.Status200OK, responseType: typeof(IEnumerable<WeatherForecastDto>));
 
 
